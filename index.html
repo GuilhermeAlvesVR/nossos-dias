@@ -173,9 +173,8 @@
       const diff = agora - startDate;
 
       const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 
-      document.getElementById("contador").innerText = `${dias} dias e ${horas} horas`;
+      document.getElementById("contador").innerText = `${dias} dias`;
     }
 
     atualizaContador();
