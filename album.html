@@ -634,7 +634,7 @@
     let selectedImageBase64 = "";
     let allMemories = [];
     let currentSpread = 0;
-    let animationDirection = "turn-next";
+    let animationDirection = "";
     let currentModalMemoryId = null;
 
     function formatDate(dateString) {
@@ -847,8 +847,15 @@
       }
     });
 
+    let lastIsMobile = window.innerWidth <= 920;
+
     window.addEventListener("resize", () => {
-      renderAlbum();
+      const nowIsMobile = window.innerWidth <= 920;
+
+      if (nowIsMobile !== lastIsMobile) {
+        lastIsMobile = nowIsMobile;
+        renderAlbum();
+      }
     });
 
     memoryImageInput.addEventListener("change", () => {
