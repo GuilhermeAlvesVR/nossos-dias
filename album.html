@@ -748,60 +748,74 @@
           animationDirection = i > currentSpread ? "turn-next" : "turn-prev";
           currentSpread = i;
           renderAlbum();
+        dot.addEventListener("click", () => {
+          if (i === currentSpread) return;
+          animationDirection = i > currentSpread ? "turn-next" : "turn-prev";
+          currentSpread = i;
+          renderAlbum();
         });
+      
 
         pageDots.appendChild(dot);
       }
     }
 
-    function renderAlbum() {
-      memoriesList.innerHTML = "";
+function renderAlbum() {
+  memoriesList.innerHTML = "";
 
-      if (!allMemories.length) {
-        memoriesList.innerHTML = `<p class="empty-message">Nenhuma memória adicionada ainda. 💖</p>`;
-        pageDots.innerHTML = "";
-        prevBtn.disabled = true;
-        nextBtn.disabled = true;
-        return;
-      }
+  if (!allMemories.length) {
+    memoriesList.innerHTML = `<p class="empty-message">Nenhuma memória adicionada ainda. 💖</p>`;
+    pageDots.innerHTML = "";
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+    return;
+  }
 
-      const spreads = splitIntoSpreads(allMemories);
+  const spreads = splitIntoSpreads(allMemories);
 
-      if (currentSpread > spreads.length - 1) {
-        currentSpread = Math.max(0, spreads.length - 1);
-      }
+  if (currentSpread > spreads.length - 1) {
+    currentSpread = Math.max(0, spreads.length - 1);
+  }
 
-      const spreadItems = spreads[currentSpread];
-      const spread = document.createElement("div");
-      spread.className = "book-spread";
+  const spreadItems = spreads[currentSpread];
 
-      if (animationDirection) {
-       spread.classList.add(animationDirection);
-      }
-      if (window.innerWidth <= 920) {
-        spread.appendChild(buildStackPage(spreadItems));
-      } else {
-        const leftItems = spreadItems.slice(0, 2);
-        const rightItems = spreadItems.slice(2, 5);
+  const spread = document.createElement("div");
+  spread.className = "book-spread";
 
-        spread.appendChild(buildStackPage(leftItems));
+  // 🔥 aplica animação só quando precisa
+  if (animationDirection) {
+    spread.classList.add(animationDirection);
+  }
 
-        if (rightItems.length) {
-          spread.appendChild(buildMixPage(rightItems));
-        } else {
-          const emptyPage = document.createElement("div");
-          emptyPage.className = "album-page";
-          spread.appendChild(emptyPage);
-        }
-      }
+  // layout
+  if (window.innerWidth <= 920) {
+    spread.appendChild(buildStackPage(spreadItems));
+  } else {
+    const leftItems = spreadItems.slice(0, 2);
+    const rightItems = spreadItems.slice(2, 5);
 
-      animationDirection = "";
+    spread.appendChild(buildStackPage(leftItems));
 
-      prevBtn.disabled = currentSpread === 0;
-      nextBtn.disabled = currentSpread === spreads.length - 1;
-
-      renderDots(spreads.length);
+    if (rightItems.length) {
+      spread.appendChild(buildMixPage(rightItems));
+    } else {
+      const emptyPage = document.createElement("div");
+      emptyPage.className = "album-page";
+      spread.appendChild(emptyPage);
     }
+  }
+
+  // 🚨 ESSENCIAL (isso tava faltando)
+  memoriesList.appendChild(spread);
+
+  // evita piscar
+  animationDirection = "";
+
+  prevBtn.disabled = currentSpread === 0;
+  nextBtn.disabled = currentSpread === spreads.length - 1;
+
+  renderDots(spreads.length);
+}
 
     modalClose.addEventListener("click", closeModal);
 
