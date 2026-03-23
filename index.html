@@ -13,6 +13,7 @@
       margin: 0;
       padding: 0;
     }
+
     h1 {
       margin-top: 50px;
       font-size: 3em;
@@ -22,98 +23,200 @@
       align-items: center;
       gap: 10px;
     }
+
     h1 span {
       font-size: 1.5em;
     }
+
     .texto-especial {
       font-size: 1.3em;
       font-style: italic;
       margin: 20px 0;
       color: #ff3399;
+      padding: 0 16px;
     }
+
     .contador {
       font-size: 2em;
       margin: 20px 0;
       color: #ff007f;
+      font-weight: bold;
     }
-    .fotos img {
-      width: 45%;
-      border-radius: 15px;
-      margin: 10px;
-      transition: transform 0.3s;
-    }
-    .fotos img:hover {
-      transform: scale(1.05);
-    }
-    .timeline {
+
+    .memories {
       background-color: #cce7ff;
       padding: 20px;
-      margin: 40px 0;
+      margin: 40px 20px;
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    .timeline h2 {
+
+    .memories h2 {
       font-size: 2em;
       color: #ff66b2;
+      margin-bottom: 20px;
     }
-    .timeline-event {
-      padding: 10px;
-      margin: 10px 0;
+
+    .memory-card {
+      display: flex;
+      gap: 15px;
+      align-items: center;
       background-color: #e6f2ff;
-      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 12px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       position: relative;
+      text-align: left;
     }
-    .timeline-event h3 {
-      color: #d18ec9;
+
+    .memory-card img {
+      width: 140px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 12px;
+      flex-shrink: 0;
     }
-    .timeline-event p {
-      color: #d18ec9;
+
+    .memory-content {
+      flex: 1;
     }
-    .timeline-event button {
+
+    .memory-date {
+      font-weight: bold;
+      color: #ff3399;
+      margin-bottom: 8px;
+      font-size: 1.05em;
+    }
+
+    .memory-caption {
+      color: #b85c9e;
+      font-size: 1.05em;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .delete-btn {
       position: absolute;
       top: 10px;
       right: 10px;
       background-color: #ff007f;
       color: white;
       border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
+      padding: 6px 10px;
+      border-radius: 6px;
       cursor: pointer;
+      font-size: 0.9em;
     }
-    .timeline-event button:hover {
+
+    .delete-btn:hover {
       background-color: #e55a94;
     }
-    .add-event {
+
+    .add-memory {
       background-color: #fff;
       padding: 20px;
-      margin: 20px 0;
+      margin: 20px;
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: left;
     }
-    .add-event input, .add-event textarea {
+
+    .add-memory h3 {
+      text-align: center;
+      color: #ff66b2;
+      margin-top: 0;
+    }
+
+    .add-memory label {
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 6px;
+      color: #d18ec9;
+      font-weight: bold;
+    }
+
+    .add-memory input,
+    .add-memory textarea {
       width: 100%;
       padding: 10px;
-      margin: 10px 0;
       border-radius: 8px;
       border: 1px solid #ddd;
       font-size: 1em;
+      box-sizing: border-box;
     }
-    .add-event button {
+
+    .add-memory textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .add-memory button {
+      margin-top: 15px;
       padding: 10px 20px;
       background-color: #ff66b2;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      font-size: 1em;
     }
-    .add-event button:hover {
+
+    .add-memory button:hover {
       background-color: #e55a94;
     }
+
+    .preview-container {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .preview-container img {
+      max-width: 220px;
+      max-height: 220px;
+      border-radius: 12px;
+      display: none;
+      margin: 0 auto;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .empty-message {
+      color: #b85c9e;
+      font-style: italic;
+      margin: 10px 0;
+    }
+
     footer {
       font-size: 1.2em;
-      margin-top: 50px;
+      margin: 50px 0 30px;
       color: #ff3399;
+      padding: 0 16px;
+    }
+
+    @media (max-width: 700px) {
+      h1 {
+        font-size: 2.2em;
+      }
+
+      .memory-card {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .memory-card img {
+        width: 100%;
+        max-width: 280px;
+        height: auto;
+      }
+
+      .memory-content {
+        text-align: center;
+      }
+
+      .delete-btn {
+        position: static;
+        margin-top: 10px;
+      }
     }
   </style>
 </head>
@@ -121,28 +224,34 @@
   <h1>
     <span>❤</span> Nosso Amor <span>❤</span>
   </h1>
+
   <p class="texto-especial">"Cada dia ao seu lado é um presente que quero guardar para sempre no meu coração."</p>
+
   <p>Estamos juntos há:</p>
   <div class="contador" id="contador"></div>
-  <div class="fotos">
-    <img src="F65C45F2-8E9C-4735-A9DB-B81793FB18F7.jpeg" alt="Foto do casal na praia">
-    <img src="E9A4784E-6978-4C71-AD28-C0E6F0347C52.jpeg" alt="Foto do casal no carro">
+
+  <div class="memories">
+    <h2>Nossas Memórias</h2>
+    <div id="memories-list"></div>
   </div>
 
-  <div class="timeline">
-    <h2>Linha do Tempo</h2>
-    <div id="timeline-events"></div>
-  </div>
+  <div class="add-memory">
+    <h3>Adicionar nova memória</h3>
 
-  <div class="add-event">
-    <h3>Adicione um evento à linha do tempo</h3>
-    <label for="event-date">Data:</label>
-    <input type="date" id="event-date" required>
-    <label for="event-title">Título:</label>
-    <input type="text" id="event-title" placeholder="Ex: Dia em que nos conhecemos" required>
-    <label for="event-description">Descrição:</label>
-    <textarea id="event-description" rows="3" placeholder="Escreva uma breve descrição..." required></textarea>
-    <button id="add-event-btn">Adicionar Evento</button>
+    <label for="memory-date">Data:</label>
+    <input type="date" id="memory-date" required>
+
+    <label for="memory-caption">Legenda:</label>
+    <textarea id="memory-caption" placeholder="Escreva uma legenda para esse momento..." required></textarea>
+
+    <label for="memory-image">Foto:</label>
+    <input type="file" id="memory-image" accept="image/*" required>
+
+    <div class="preview-container">
+      <img id="image-preview" alt="Prévia da foto">
+    </div>
+
+    <button id="add-memory-btn">Adicionar memória</button>
   </div>
 
   <footer>Com muito amor, de mim para você! 💖</footer>
@@ -168,75 +277,148 @@
     const startDate = new Date("2024-10-19T00:00:00-03:00");
 
     function atualizaContador() {
-      const hoje = new Date();
-      const diff = hoje - startDate;
+      const agora = new Date();
+      const diff = agora - startDate;
+
       const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-      document.getElementById("contador").innerText = `${dias} dias`;
+      const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById("contador").innerText =
+        `${dias} dias, ${horas} horas, ${minutos} minutos e ${segundos} segundos`;
     }
+
     atualizaContador();
+    setInterval(atualizaContador, 1000);
 
-    const timelineRef = ref(database, "timeline");
+    const memoriesRef = ref(database, "memories");
 
-document.getElementById("add-event-btn").addEventListener("click", async () => {
-  const date = document.getElementById("event-date").value;
-  const title = document.getElementById("event-title").value;
-  const description = document.getElementById("event-description").value;
+    const memoryDateInput = document.getElementById("memory-date");
+    const memoryCaptionInput = document.getElementById("memory-caption");
+    const memoryImageInput = document.getElementById("memory-image");
+    const addMemoryBtn = document.getElementById("add-memory-btn");
+    const imagePreview = document.getElementById("image-preview");
+    const memoriesList = document.getElementById("memories-list");
 
-  if (date && title && description) {
-    const adjustedDate = new Date(date + "T00:00:00-03:00");
+    let selectedImageBase64 = "";
 
-    try {
-      const res = await push(timelineRef, { date: adjustedDate.toISOString(), title, description });
-      console.log("Salvou! ID:", res.key);
+    memoryImageInput.addEventListener("change", () => {
+      const file = memoryImageInput.files[0];
 
-      document.getElementById("event-date").value = "";
-      document.getElementById("event-title").value = "";
-      document.getElementById("event-description").value = "";
-    } catch (err) {
-      console.error("Erro ao salvar no Firebase:", err);
-      alert("Não consegui salvar. Veja o Console (F12).");
-    }
-  } else {
-    alert("Preencha todos os campos.");
-  }
-});
+      if (!file) {
+        selectedImageBase64 = "";
+        imagePreview.style.display = "none";
+        imagePreview.src = "";
+        return;
+      }
 
-    const renderTimeline = (events) => {
-      const timelineDiv = document.getElementById("timeline-events");
-      timelineDiv.innerHTML = ""; 
-      events.forEach(event => {
-        const eventDiv = document.createElement("div");
-        eventDiv.classList.add("timeline-event");
-        eventDiv.setAttribute("data-id", event.id);
-        eventDiv.innerHTML = `
-          <h3>${event.title} <small>(${new Date(event.date).toLocaleDateString("pt-BR")})</small></h3>
-          <p>${event.description}</p>
+      if (!file.type.startsWith("image/")) {
+        alert("Selecione um arquivo de imagem válido.");
+        memoryImageInput.value = "";
+        selectedImageBase64 = "";
+        imagePreview.style.display = "none";
+        imagePreview.src = "";
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        selectedImageBase64 = e.target.result;
+        imagePreview.src = selectedImageBase64;
+        imagePreview.style.display = "block";
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    addMemoryBtn.addEventListener("click", async () => {
+      const date = memoryDateInput.value;
+      const caption = memoryCaptionInput.value.trim();
+
+      if (!date || !caption || !selectedImageBase64) {
+        alert("Preencha a data, a legenda e escolha uma foto.");
+        return;
+      }
+
+      const file = memoryImageInput.files[0];
+      if (file && file.size > 1024 * 1024 * 2) {
+        alert("Escolha uma imagem com até 2MB.");
+        return;
+      }
+
+      const adjustedDate = new Date(date + "T00:00:00-03:00");
+
+      try {
+        await push(memoriesRef, {
+          date: adjustedDate.toISOString(),
+          caption,
+          image: selectedImageBase64
+        });
+
+        memoryDateInput.value = "";
+        memoryCaptionInput.value = "";
+        memoryImageInput.value = "";
+        selectedImageBase64 = "";
+        imagePreview.src = "";
+        imagePreview.style.display = "none";
+      } catch (err) {
+        console.error("Erro ao salvar memória:", err);
+        alert("Não consegui salvar a memória. Veja o console (F12).");
+      }
+    });
+
+    function renderMemories(memories) {
+      memoriesList.innerHTML = "";
+
+      if (!memories.length) {
+        memoriesList.innerHTML = `<p class="empty-message">Nenhuma memória adicionada ainda. 💖</p>`;
+        return;
+      }
+
+      memories.forEach(memory => {
+        const card = document.createElement("div");
+        card.className = "memory-card";
+        card.setAttribute("data-id", memory.id);
+
+        card.innerHTML = `
+          <img src="${memory.image}" alt="Memória especial">
+          <div class="memory-content">
+            <div class="memory-date">${new Date(memory.date).toLocaleDateString("pt-BR")}</div>
+            <div class="memory-caption">${memory.caption}</div>
+          </div>
           <button class="delete-btn">Excluir</button>
         `;
-        timelineDiv.appendChild(eventDiv);
 
-        eventDiv.querySelector(".delete-btn").addEventListener("click", () => {
-          const eventRef = ref(database, `timeline/${event.id}`);
-          remove(eventRef);
+        card.querySelector(".delete-btn").addEventListener("click", () => {
+          const confirmDelete = confirm("Tem certeza que deseja excluir essa memória?");
+          if (!confirmDelete) return;
+
+          const memoryRef = ref(database, `memories/${memory.id}`);
+          remove(memoryRef);
         });
+
+        memoriesList.appendChild(card);
       });
-    };
+    }
 
-onValue(
-  timelineRef,
-  (snapshot) => {
-    const data = snapshot.val();
-    const events = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-    events.sort((a, b) => new Date(a.date) - new Date(b.date));
-    renderTimeline(events);
-  },
-  (err) => {
-    console.error("Erro ao LER do Firebase (onValue):", err);
-    alert("Não consegui carregar a timeline. Veja o Console (F12).");
-  }
-);
+    onValue(
+      memoriesRef,
+      (snapshot) => {
+        const data = snapshot.val();
+        const memories = data
+          ? Object.keys(data).map(key => ({ id: key, ...data[key] }))
+          : [];
 
+        memories.sort((a, b) => new Date(a.date) - new Date(b.date));
+        renderMemories(memories);
+      },
+      (err) => {
+        console.error("Erro ao carregar memórias:", err);
+        alert("Não consegui carregar as memórias. Veja o console (F12).");
+      }
+    );
   </script>
 </body>
 </html>
-
