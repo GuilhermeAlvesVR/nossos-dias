@@ -736,29 +736,23 @@
     }
 
     function renderDots(total) {
-      pageDots.innerHTML = "";
+  pageDots.innerHTML = "";
 
-      for (let i = 0; i < total; i++) {
-        const dot = document.createElement("button");
-        dot.className = `page-dot ${i === currentSpread ? "active" : ""}`;
-        dot.setAttribute("aria-label", `Ir para página ${i + 1}`);
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement("button");
+    dot.className = `page-dot ${i === currentSpread ? "active" : ""}`;
+    dot.setAttribute("aria-label", `Ir para página ${i + 1}`);
 
-        dot.addEventListener("click", () => {
-          if (i === currentSpread) return;
-          animationDirection = i > currentSpread ? "turn-next" : "turn-prev";
-          currentSpread = i;
-          renderAlbum();
-        dot.addEventListener("click", () => {
-          if (i === currentSpread) return;
-          animationDirection = i > currentSpread ? "turn-next" : "turn-prev";
-          currentSpread = i;
-          renderAlbum();
-        });
-      
+    dot.addEventListener("click", () => {
+      if (i === currentSpread) return;
+      animationDirection = i > currentSpread ? "turn-next" : "turn-prev";
+      currentSpread = i;
+      renderAlbum();
+    });
 
-        pageDots.appendChild(dot);
-      }
-    }
+    pageDots.appendChild(dot);
+  }
+}
 
 function renderAlbum() {
   memoriesList.innerHTML = "";
