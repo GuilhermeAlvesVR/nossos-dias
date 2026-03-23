@@ -773,8 +773,11 @@
 
       const spreadItems = spreads[currentSpread];
       const spread = document.createElement("div");
-      spread.className = `book-spread ${animationDirection}`;
+      spread.className = "book-spread";
 
+      if (animationDirection) {
+       spread.classList.add(animationDirection);
+      }
       if (window.innerWidth <= 920) {
         spread.appendChild(buildStackPage(spreadItems));
       } else {
@@ -792,7 +795,7 @@
         }
       }
 
-      memoriesList.appendChild(spread);
+      animationDirection = "";
 
       prevBtn.disabled = currentSpread === 0;
       nextBtn.disabled = currentSpread === spreads.length - 1;
@@ -934,6 +937,7 @@
 
         memories.sort((a, b) => new Date(a.date) - new Date(b.date));
         allMemories = memories;
+        animationDirection = "";
         renderAlbum();
       },
       (err) => {
