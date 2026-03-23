@@ -61,18 +61,49 @@
     }
 
     #memories-list {
+      display: flex;
+      justify-content: center;
+    }
+
+    .album-page {
+      width: 100%;
+      max-width: 980px;
+      background: #fffaf2;
+      border-radius: 22px;
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.6), 0 8px 20px rgba(0, 0, 0, 0.08);
+      padding: 24px;
+      position: relative;
+    }
+
+    .album-page::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      bottom: 18px;
+      left: 50%;
+      width: 2px;
+      background: rgba(180, 150, 120, 0.18);
+      transform: translateX(-50%);
+      border-radius: 999px;
+    }
+
+    .album-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 18px;
+      position: relative;
+      z-index: 1;
     }
 
     .memory-card {
-      background-color: #f7fbff;
+      background-color: #fff;
       border-radius: 18px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       overflow: hidden;
       text-align: left;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
     }
 
     .memory-card:hover {
@@ -92,6 +123,7 @@
     .memory-content {
       padding: 14px 14px 10px;
       text-align: center;
+      flex: 1;
     }
 
     .memory-date {
@@ -124,6 +156,41 @@
 
     .delete-btn:hover {
       background-color: #e55a94;
+    }
+
+    .album-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    .album-btn {
+      background-color: #ff66b2;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 1em;
+      cursor: pointer;
+      min-width: 140px;
+    }
+
+    .album-btn:hover:not(:disabled) {
+      background-color: #e55a94;
+    }
+
+    .album-btn:disabled {
+      background-color: #e2a8c7;
+      cursor: not-allowed;
+    }
+
+    .page-indicator {
+      color: #b85c9e;
+      font-weight: bold;
+      font-size: 1em;
     }
 
     .add-memory {
@@ -199,8 +266,8 @@
       color: #b85c9e;
       font-style: italic;
       margin: 10px 0;
-      grid-column: 1 / -1;
       text-align: center;
+      width: 100%;
     }
 
     .modal {
@@ -273,6 +340,16 @@
       padding: 0 16px;
     }
 
+    @media (max-width: 900px) {
+      .album-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .album-page::before {
+        display: none;
+      }
+    }
+
     @media (max-width: 700px) {
       h1 {
         font-size: 2.2em;
@@ -280,11 +357,6 @@
 
       .memories h2 {
         font-size: 1.9em;
-      }
-
-      #memories-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
       }
 
       .memory-content {
@@ -299,11 +371,17 @@
       .contador {
         font-size: 1.55em;
       }
+
+      .album-btn {
+        min-width: 120px;
+        padding: 10px 14px;
+      }
     }
 
-    @media (max-width: 420px) {
-      #memories-list {
-        grid-template-columns: 1fr 1fr;
+    @media (max-width: 520px) {
+      .album-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
       }
 
       .memories {
@@ -313,6 +391,10 @@
 
       .add-memory {
         margin: 12px;
+      }
+
+      .album-page {
+        padding: 16px;
       }
     }
   </style>
@@ -328,8 +410,14 @@
   <div class="contador" id="contador"></div>
 
   <div class="memories">
-    <h2>Nossas Memórias</h2>
+    <h2>Nosso Álbum</h2>
     <div id="memories-list"></div>
+
+    <div class="album-controls">
+      <button class="album-btn" id="prev-btn">← Anterior</button>
+      <span class="page-indicator" id="page-indicator">Página 1 de 1</span>
+      <button class="album-btn" id="next-btn">Próxima →</button>
+    </div>
   </div>
 
   <div class="add-memory">
@@ -384,6 +472,29 @@
 
     const startDate = new Date("2024-10-19T00:00:00-03:00");
 
+    const memoriesRef = ref(database, "memories");
+
+    const memoryDateInput = document.getElementById("memory-date");
+    const memoryCaptionInput = document.getElementById("memory-caption");
+    const memoryImageInput = document.getElementById("memory-image");
+    const addMemoryBtn = document.getElementById("add-memory-btn");
+    const imagePreview = document.getElementById("image-preview");
+    const memoriesList = document.getElementById("memories-list");
+
+    const imageModal = document.getElementById("image-modal");
+    const modalImage = document.getElementById("modal-image");
+    const modalDate = document.getElementById("modal-date");
+    const modalCaption = document.getElementById("modal-caption");
+    const modalClose = document.getElementById("modal-close");
+
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const pageIndicator = document.getElementById("page-indicator");
+
+    let selectedImageBase64 = "";
+    let allMemories = [];
+    let currentPage = 0;
+
     function atualizaContador() {
       const agora = new Date();
       const diff = agora - startDate;
@@ -400,25 +511,23 @@
     atualizaContador();
     setInterval(atualizaContador, 1000);
 
-    const memoriesRef = ref(database, "memories");
-
-    const memoryDateInput = document.getElementById("memory-date");
-    const memoryCaptionInput = document.getElementById("memory-caption");
-    const memoryImageInput = document.getElementById("memory-image");
-    const addMemoryBtn = document.getElementById("add-memory-btn");
-    const imagePreview = document.getElementById("image-preview");
-    const memoriesList = document.getElementById("memories-list");
-
-    const imageModal = document.getElementById("image-modal");
-    const modalImage = document.getElementById("modal-image");
-    const modalDate = document.getElementById("modal-date");
-    const modalCaption = document.getElementById("modal-caption");
-    const modalClose = document.getElementById("modal-close");
-
-    let selectedImageBase64 = "";
-
     function formatDate(dateString) {
       return new Date(dateString).toLocaleDateString("pt-BR");
+    }
+
+    function getItemsPerPage() {
+      return window.innerWidth <= 900 ? 2 : 3;
+    }
+
+    function getPages(memories) {
+      const itemsPerPage = getItemsPerPage();
+      const pages = [];
+
+      for (let i = 0; i < memories.length; i += itemsPerPage) {
+        pages.push(memories.slice(i, i + itemsPerPage));
+      }
+
+      return pages;
     }
 
     function openModal(image, date, caption) {
@@ -433,6 +542,77 @@
       modalImage.src = "";
     }
 
+    function updatePaginationControls(totalPages) {
+      pageIndicator.textContent = totalPages === 0
+        ? "Página 0 de 0"
+        : `Página ${currentPage + 1} de ${totalPages}`;
+
+      prevBtn.disabled = currentPage <= 0;
+      nextBtn.disabled = currentPage >= totalPages - 1 || totalPages === 0;
+    }
+
+    function renderMemories() {
+      memoriesList.innerHTML = "";
+
+      if (!allMemories.length) {
+        memoriesList.innerHTML = `<p class="empty-message">Nenhuma memória adicionada ainda. 💖</p>`;
+        updatePaginationControls(0);
+        return;
+      }
+
+      const pages = getPages(allMemories);
+
+      if (currentPage > pages.length - 1) {
+        currentPage = Math.max(0, pages.length - 1);
+      }
+
+      const currentMemories = pages[currentPage];
+      const albumPage = document.createElement("div");
+      albumPage.className = "album-page";
+
+      const albumGrid = document.createElement("div");
+      albumGrid.className = "album-grid";
+
+      currentMemories.forEach(memory => {
+        const card = document.createElement("div");
+        card.className = "memory-card";
+        card.setAttribute("data-id", memory.id);
+
+        card.innerHTML = `
+          <img src="${memory.image}" alt="Memória especial" class="memory-img">
+          <div class="memory-content">
+            <div class="memory-date">${formatDate(memory.date)}</div>
+            <div class="memory-caption">${memory.caption}</div>
+          </div>
+          <button class="delete-btn">Excluir</button>
+        `;
+
+        card.querySelector(".memory-img").addEventListener("click", () => {
+          openModal(memory.image, memory.date, memory.caption);
+        });
+
+        card.querySelector(".delete-btn").addEventListener("click", async () => {
+          const confirmDelete = confirm("Tem certeza que deseja excluir essa memória?");
+          if (!confirmDelete) return;
+
+          try {
+            const memoryRef = ref(database, `memories/${memory.id}`);
+            await remove(memoryRef);
+          } catch (err) {
+            console.error("Erro ao excluir memória:", err);
+            alert("Não consegui excluir a memória.");
+          }
+        });
+
+        albumGrid.appendChild(card);
+      });
+
+      albumPage.appendChild(albumGrid);
+      memoriesList.appendChild(albumPage);
+
+      updatePaginationControls(pages.length);
+    }
+
     modalClose.addEventListener("click", closeModal);
 
     imageModal.addEventListener("click", (e) => {
@@ -445,6 +625,25 @@
       if (e.key === "Escape") {
         closeModal();
       }
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (currentPage > 0) {
+        currentPage--;
+        renderMemories();
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      const totalPages = getPages(allMemories).length;
+      if (currentPage < totalPages - 1) {
+        currentPage++;
+        renderMemories();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      renderMemories();
     });
 
     memoryImageInput.addEventListener("change", () => {
@@ -513,44 +712,6 @@
       }
     });
 
-    function renderMemories(memories) {
-      memoriesList.innerHTML = "";
-
-      if (!memories.length) {
-        memoriesList.innerHTML = `<p class="empty-message">Nenhuma memória adicionada ainda. 💖</p>`;
-        return;
-      }
-
-      memories.forEach(memory => {
-        const card = document.createElement("div");
-        card.className = "memory-card";
-        card.setAttribute("data-id", memory.id);
-
-        card.innerHTML = `
-          <img src="${memory.image}" alt="Memória especial" class="memory-img">
-          <div class="memory-content">
-            <div class="memory-date">${formatDate(memory.date)}</div>
-            <div class="memory-caption">${memory.caption}</div>
-          </div>
-          <button class="delete-btn">Excluir</button>
-        `;
-
-        card.querySelector(".memory-img").addEventListener("click", () => {
-          openModal(memory.image, memory.date, memory.caption);
-        });
-
-        card.querySelector(".delete-btn").addEventListener("click", () => {
-          const confirmDelete = confirm("Tem certeza que deseja excluir essa memória?");
-          if (!confirmDelete) return;
-
-          const memoryRef = ref(database, `memories/${memory.id}`);
-          remove(memoryRef);
-        });
-
-        memoriesList.appendChild(card);
-      });
-    }
-
     onValue(
       memoriesRef,
       (snapshot) => {
@@ -560,7 +721,8 @@
           : [];
 
         memories.sort((a, b) => new Date(a.date) - new Date(b.date));
-        renderMemories(memories);
+        allMemories = memories;
+        renderMemories();
       },
       (err) => {
         console.error("Erro ao carregar memórias:", err);
